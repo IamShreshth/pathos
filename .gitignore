@@ -1,0 +1,18 @@
+# Build artifacts
+cpp-engine/bin/
+cpp-engine/obj/
+build/
+*.o
+*.out
+*.exe
+.DS_Store
+
+# User generated data files (users must generate their own)
+data/*.osm
+data/*.json
+!data/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.venv/
