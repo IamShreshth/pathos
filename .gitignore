@@ -1,13 +1,16 @@
 # Build artifacts
+cpp-engine/bin/
+cpp-engine/obj/
 build/
 *.o
 *.out
 *.exe
 .DS_Store
 
-# Large raw OSM cache
+# User generated data files (users must generate their own)
 data/*.osm
-!data/iitj_graph.json
+data/*.json
+!data/.gitkeep
 
 # Python
 __pycache__/
