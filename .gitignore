@@ -1,0 +1,15 @@
+# Build artifacts
+build/
+*.o
+*.out
+*.exe
+.DS_Store
+
+# Large raw OSM cache
+data/*.osm
+!data/iitj_graph.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
