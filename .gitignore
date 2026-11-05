@@ -1,0 +1,18 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# C++ build output
+engine/build/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+*.tsbuildinfo
+
+# OSMnx download cache (regenerable); processed graphs in data/processed are kept
+data/raw/
+
+.DS_Store
