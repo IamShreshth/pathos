@@ -1,0 +1,17 @@
+{
+  "graph_version": "demo-v1",
+  "nodes": 1537,
+  "edges": 4994,
+  "bbox": {
+    "south": 26.890151100177512,
+    "west": 75.76294181079683,
+    "north": 26.933625882607174,
+    "east": 75.81044756747322
+  },
+  "center": {
+    "lat": 26.911888491392343,
+    "lon": 75.78669468913503
+  },
+  "source": "synthetic demo grid (not real roads)",
+  "seed": 2120
+}

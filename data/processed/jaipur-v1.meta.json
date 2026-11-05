@@ -1,0 +1,24 @@
+{
+  "graph_version": "jaipur-v1",
+  "nodes": 6701,
+  "edges": 17014,
+  "bbox": {
+    "south": 26.885425,
+    "west": 75.7570697,
+    "north": 26.9393663,
+    "east": 75.817531
+  },
+  "center": {
+    "lat": 26.91239565,
+    "lon": 75.78730035000001
+  },
+  "source": "OpenStreetMap via OSMnx",
+  "query": {
+    "point": "26.9124,75.7873",
+    "dist_m": 3000
+  },
+  "network_type": "drive",
+  "osmnx_version": "2.1.1",
+  "created_utc": "2026-11-05T05:37:25+00:00",
+  "attribution": "\u00a9 OpenStreetMap contributors (ODbL)"
+}
