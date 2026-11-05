@@ -6,6 +6,12 @@ __pycache__/
 
 # C++ build output
 engine/build/
+cpp-engine/bin/
+cpp-engine/obj/
+build/
+*.o
+*.out
+*.exe
 
 # Frontend
 frontend/node_modules/
@@ -14,5 +20,10 @@ frontend/dist/
 
 # OSMnx download cache (regenerable); processed graphs in data/processed are kept
 data/raw/
+
+# User generated data files from data_pipeline/ (users must generate their own)
+data/*.osm
+data/*.json
+!data/.gitkeep
 
 .DS_Store
