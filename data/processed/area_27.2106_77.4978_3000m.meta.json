@@ -1,0 +1,27 @@
+{
+  "graph_version": "area_27.2106_77.4978_3000m",
+  "nodes": 4242,
+  "edges": 11336,
+  "bbox": {
+    "south": 27.1837348,
+    "west": 77.4675148,
+    "north": 27.2371662,
+    "east": 77.5281733
+  },
+  "center": {
+    "lat": 27.2104505,
+    "lon": 77.49784405
+  },
+  "source": "OpenStreetMap via OSMnx",
+  "query": {
+    "point": [
+      27.21063,
+      77.49784
+    ],
+    "dist_m": 3000
+  },
+  "network_type": "drive",
+  "osmnx_version": "2.1.1",
+  "created_utc": "2026-11-05T06:04:58+00:00",
+  "attribution": "\u00a9 OpenStreetMap contributors (ODbL)"
+}
