@@ -4,13 +4,8 @@ import type {
   GraphMetadata,
   GraphSummary,
   OutsideCoverageDetail,
-  FleetRequestBody,
-  FleetResponse,
-  ReplanResponse,
   RouteResponse,
-  TdRouteResponse,
   TourResponse,
-  TrafficResponse,
   Weight,
 } from "./types";
 
@@ -69,20 +64,6 @@ export const api = {
     request<RouteResponse>("/routes/compare", post({ source, destination, algorithms, weight, record_trace: true })),
 
   tour: (stops: Coordinate[], weight: Weight) => request<TourResponse>("/tours", post({ stops, weight })),
-
-  traffic: (hour: number, minMultiplier = 1.3) =>
-    request<TrafficResponse>(`/traffic?hour=${hour}&min_multiplier=${minMultiplier}`),
-
-  mobilityRoutes: (source: Coordinate, destination: Coordinate, depart_hour: number, slack: number, alpha: number) =>
-    request<TdRouteResponse>("/mobility/routes", post({ source, destination, depart_hour, slack, alpha })),
-
-  replan: (
-    source: Coordinate,
-    destination: Coordinate,
-    o: { depart_hour: number; type: "closure" | "incident"; duration_min: number; edges_ahead: number },
-  ) => request<ReplanResponse>("/mobility/replan", post({ source, destination, ...o })),
-
-  fleet: (body: FleetRequestBody) => request<FleetResponse>("/fleet/simulate", post(body)),
 
   graphs: () => request<GraphSummary[]>("/graphs"),
 

@@ -20,9 +20,3 @@ jobs:
     - name: Build
       run: cmake --build cpp-engine/build --config Release
 
-
-    - name: Build engine (Pathos 2.0) and run its unit tests
-      run: |
-        cmake -B engine/build -S engine -DCMAKE_BUILD_TYPE=Release
-        cmake --build engine/build --config Release
-        engine/build/pathos_tests
