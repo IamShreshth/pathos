@@ -9,6 +9,8 @@
 //   route <bfs|dijkstra|astar> <distance|time> <source> <target> [trace 0|1]
 //   tour <distance|time> <stop1> <stop2> ... <stopK>
 //   quit
+//   {"cmd": ...}                              Pathos 2.0 JSON commands (traffic, td_route,
+//                                              replan_demo, fleet, bench); see commands.hpp
 //
 // Node arguments are compact node indices (0 .. N-1) from the graph file.
 // In serve mode the engine prints {"ok":true,"ready":true,...} once the graph
@@ -20,9 +22,11 @@
 #include <string>
 #include <vector>
 
+#include "pathos/commands.hpp"
 #include "pathos/graph.hpp"
 #include "pathos/json.hpp"
 #include "pathos/routing.hpp"
+#include "pathos/traffic.hpp"
 #include "pathos/tsp.hpp"
 
 using namespace pathos;
@@ -170,6 +174,16 @@ std::vector<std::string> split(const std::string& line) {
     return out;
 }
 
+// The traffic model is built once per graph; JSON commands may override its parameters per request.
+const EngineContext* g_ctx = nullptr;
+
+std::string run_line(const Graph& g, const std::string& line) {
+    std::size_t i = line.find_first_not_of(" \t\r");
+    if (i != std::string::npos && line[i] == '{') return handle_json_command(*g_ctx, line.substr(i));
+    return dispatch(g, split(line));
+}
+
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -187,10 +201,15 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    TrafficModel traffic(g);
+    EngineContext ctx{g, traffic};
+    g_ctx = &ctx;
+
     const std::string mode = argv[2];
     if (mode != "serve") {
-        std::vector<std::string> args(argv + 2, argv + argc);
-        const std::string out = dispatch(g, args);
+        std::string joined;
+        for (int i = 2; i < argc; ++i) joined += std::string(i > 2 ? " " : "") + argv[i];
+        const std::string out = run_line(g, joined);
         std::cout << out << std::endl;
         return out.rfind("{\"ok\":true", 0) == 0 ? 0 : 1;
     }
@@ -206,7 +225,7 @@ int main(int argc, char** argv) {
         const auto args = split(line);
         if (args.empty()) continue;
         if (args[0] == "quit") break;
-        std::cout << dispatch(g, args) << std::endl;  // endl flushes: the caller waits per line
+        std::cout << run_line(g, line) << std::endl;  // endl flushes: the caller waits per line
     }
     return 0;
 }

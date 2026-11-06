@@ -37,3 +37,42 @@ export function ms(x: number): string {
 export function int(n: number): string {
   return n.toLocaleString();
 }
+
+/** Seconds since midnight as HH:MM. */
+export function clock(sec: number): string {
+  const s = Math.max(0, Math.round(sec / 60) * 60);
+  const h = Math.floor(s / 3600) % 24;
+  const m = Math.floor((s % 3600) / 60);
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+export function pct(x: number | null | undefined, digits = 0): string {
+  return x == null ? "—" : `${(x * 100).toFixed(digits)}%`;
+}
+
+export function mmss(sec: number | null | undefined): string {
+  if (sec == null) return "—";
+  const s = Math.round(sec);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+
+export const STRATEGY_LABEL: Record<string, string> = {
+  static: "Static",
+  greedy: "Greedy repair",
+  full: "Full recompute",
+  selective: "Selective",
+};
+
+export const STRATEGY_COLOR: Record<string, string> = {
+  static: "#868e96",
+  greedy: "#f08c00",
+  full: "#1c7ed6",
+  selective: "#2f9e44",
+};
+
+export const STRATEGY_HINT: Record<string, string> = {
+  static: "initial plan + cheapest insertion; blind to disruptions",
+  greedy: "re-routes affected vehicles, keeps their stop order",
+  full: "re-solves everything from scratch at every event",
+  selective: "re-optimises only the affected vehicles (warm start)",
+};

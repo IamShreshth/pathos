@@ -2,6 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, api } from "./api/client";
 import type { Algorithm, Coordinate, GraphMetadata, GraphSummary, RouteResponse, TourResponse, Weight } from "./api/types";
 import { AreaPanel, OutsideNotice } from "./components/AreaPanel";
+import { DisruptionPanel } from "./components/DisruptionPanel";
+import { FleetPanel } from "./components/FleetPanel";
+import { ReliablePanel } from "./components/ReliablePanel";
 import { RoutePanel } from "./components/RoutePanel";
 import { TourPanel } from "./components/TourPanel";
 import { ALGO_COLOR, ALGO_LABEL, TOUR_COLOR, km, minutes } from "./format";
@@ -9,7 +12,8 @@ import { type AreaPlan, inCoverage, planArea } from "./geo";
 import type { MapController } from "./map/MapController";
 import { MapView } from "./map/MapView";
 
-type Mode = "route" | "tour";
+type Mode = "route" | "tour" | "reliable" | "disrupt" | "fleet";
+const PANEL_MODES: Mode[] = ["reliable", "disrupt", "fleet"];
 const ALL: Algorithm[] = ["bfs", "dijkstra", "astar"];
 
 export default function App() {
@@ -39,6 +43,13 @@ export default function App() {
   const [radius, setRadius] = useState(3000);
 
   const requestId = useRef(0);
+
+  // Pathos 2.0 panels own their points; the map click is forwarded to the active panel.
+  const modeClick = useRef<((c: Coordinate) => void) | null>(null);
+  const register = useCallback((h: ((c: Coordinate) => void) | null) => {
+    modeClick.current = h;
+  }, []);
+  const [panelBusy, setPanelBusy] = useState(false);
 
   // ----------------------------------------------------------- metadata
   const refreshGraphs = useCallback(() => {
@@ -121,8 +132,12 @@ export default function App() {
       if (meta && !inCoverage(meta, c)) {
         // Offer to download this area instead of sending a request that must fail.
         const points =
-          mode === "route" ? (source && !destination ? [source, c] : [c]) : [...stops, c];
+          mode === "route" ? (source && !destination ? [source, c] : [c]) : mode === "tour" ? [...stops, c] : [c];
         setOutside(planArea(points, c, radius, meta.max_area_radius_m));
+        return;
+      }
+      if (PANEL_MODES.includes(mode)) {
+        modeClick.current?.(c);
         return;
       }
       if (mode === "route") {
@@ -150,6 +165,8 @@ export default function App() {
     requestId.current++;
     ctrl?.clearSearch();
     ctrl?.clearRoutes();
+    ctrl?.clearLayers();
+    modeClick.current = null;
     setMode(m);
     setError(null);
     setLoading(false);
@@ -236,7 +253,7 @@ export default function App() {
         ctrl.addSnap(route.source, ALGO_COLOR.astar);
         ctrl.addSnap(route.destination, "#c92a2a");
       }
-    } else {
+    } else if (mode === "tour") {
       // Same labels as the tour panel: S for the start, then the stop number.
       const visit = new Map<number, number>();
       tour?.order.forEach((stop, pos) => visit.set(stop, pos));
@@ -292,29 +309,38 @@ export default function App() {
   };
 
   return (
-    <div className="app">
+    <div className={panelBusy ? "app wait" : "app"}>
       <aside className="sidebar">
         <header>
           <h1>pathos</h1>
-          <p className="tagline">Fewer wrong turns, more right answers.</p>
+          <p className="tagline">Fewer wrong turns, more right answers. Now adaptive to traffic, uncertainty and disruptions.</p>
         </header>
 
         <div className="tabs" role="tablist">
-          <button role="tab" aria-selected={mode === "route"} className={mode === "route" ? "active" : ""} onClick={() => switchMode("route")}>
-            Compare routes
-          </button>
-          <button role="tab" aria-selected={mode === "tour"} className={mode === "tour" ? "active" : ""} onClick={() => switchMode("tour")}>
-            Multi-stop tour
-          </button>
+          {(
+            [
+              ["route", "Routes"],
+              ["tour", "Tour"],
+              ["reliable", "Reliability"],
+              ["disrupt", "Disruption"],
+              ["fleet", "Fleet"],
+            ] as [Mode, string][]
+          ).map(([m, label]) => (
+            <button key={m} role="tab" aria-selected={mode === m} className={mode === m ? "active" : ""} onClick={() => switchMode(m)}>
+              {label}
+            </button>
+          ))}
         </div>
 
-        <label className="field">
-          <span>Optimise for</span>
-          <select value={weight} onChange={(e) => setWeight(e.target.value as Weight)}>
-            <option value="distance">Shortest distance</option>
-            <option value="time">Fastest (estimated free-flow time)</option>
-          </select>
-        </label>
+        {(mode === "route" || mode === "tour") && (
+          <label className="field">
+            <span>Optimise for</span>
+            <select value={weight} onChange={(e) => setWeight(e.target.value as Weight)}>
+              <option value="distance">Shortest distance</option>
+              <option value="time">Fastest (estimated free-flow time)</option>
+            </select>
+          </label>
+        )}
 
         <AreaPanel
           meta={meta}
@@ -368,6 +394,12 @@ export default function App() {
             onReplay={() => route && playRoute(route, speed)}
             onClear={clearRoute}
           />
+        ) : mode === "reliable" ? (
+          <ReliablePanel key={meta?.graph_version} ctrl={ctrl} register={register} onError={handleError} onBusy={setPanelBusy} />
+        ) : mode === "disrupt" ? (
+          <DisruptionPanel key={meta?.graph_version} ctrl={ctrl} register={register} onError={handleError} onBusy={setPanelBusy} />
+        ) : mode === "fleet" ? (
+          <FleetPanel key={meta?.graph_version} ctrl={ctrl} register={register} onError={handleError} onBusy={setPanelBusy} maxStops={meta?.max_tour_stops ?? 25} />
         ) : (
           <TourPanel
             stops={stops}
