@@ -139,38 +139,6 @@ class GraphStore:
             coords.append([self.lons[v], self.lats[v]])
         return coords
 
-    def edge_coordinates(self, u: int, v: int) -> list[list[float]]:
-        """Road shape of one directed edge as [lon, lat] points."""
-        return self.path_coordinates([u, v])
-
-    def timed_path(self, nodes: list[int], times: list[float]) -> list[list[float]]:
-        """[lon, lat, t] points along a node path with times given at the nodes.
-
-        Intermediate road-shape points get times interpolated by distance, so a
-        vehicle drawn from this list follows the curved road at a steady speed
-        between two nodes.
-        """
-        pts: list[list[float]] = []
-        for i, node in enumerate(nodes):
-            if i == 0:
-                pts.append([self.lons[node], self.lats[node], times[0]])
-                continue
-            u = nodes[i - 1]
-            shape = [(lat, lon) for lat, lon in self.shapes.get((u, node), ())]
-            shape.append((self.lats[node], self.lons[node]))
-            prev = (pts[-1][1], pts[-1][0])
-            legs = []
-            for lat, lon in shape:
-                legs.append(haversine_m(prev[0], prev[1], lat, lon))
-                prev = (lat, lon)
-            total = sum(legs) or 1.0
-            t0, t1 = times[i - 1], times[i]
-            acc = 0.0
-            for (lat, lon), d in zip(shape, legs):
-                acc += d
-                pts.append([lon, lat, t0 + (t1 - t0) * acc / total])
-        return pts
-
     def trace_segments(self, flat: list[int], limit: int) -> tuple[list[list[float]], bool]:
         """Engine trace [node, parent, ...] -> [[plat, plon, lat, lon], ...] (parent may equal node for the root)."""
         segs: list[list[float]] = []

@@ -16,7 +16,6 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import Settings
 from app.routes.api import router
-from app.routes.mobility import router as mobility_router
 from app.services.graph_manager import GraphManager
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -39,16 +38,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(
         title="pathos",
-        description="Urban routing, multi-stop tours and (Pathos 2.0) adaptive, uncertainty-aware multi-vehicle "
-        "routing on OpenStreetMap roads.",
-        version="2.0.0",
+        description="Urban routing (BFS / Dijkstra / A*) and multi-stop tours on OpenStreetMap roads.",
+        version="1.0.0",
         lifespan=lifespan,
     )
     app.add_middleware(
         CORSMiddleware, allow_origins=settings.cors_origins, allow_methods=["*"], allow_headers=["*"]
     )
     app.include_router(router)
-    app.include_router(mobility_router)
 
     # Serve the built React app (frontend/dist) when present, so one process runs everything.
     dist = settings.frontend_dist

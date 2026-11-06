@@ -31,9 +31,6 @@ class Settings:
     data_dir: Path
     osm_cache_dir: Path
     max_area_radius_m: int
-    fleet_timeout_s: float
-    max_fleet_requests: int
-    max_fleet_vehicles: int
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -50,7 +47,4 @@ class Settings:
             data_dir=Path(os.environ.get("PATHOS_DATA_DIR", ROOT / "data" / "processed")),
             osm_cache_dir=Path(os.environ.get("PATHOS_OSM_CACHE", ROOT / "data" / "raw" / "osmnx-cache")),
             max_area_radius_m=int(os.environ.get("PATHOS_MAX_AREA_RADIUS_M", 8000)),
-            fleet_timeout_s=float(os.environ.get("PATHOS_FLEET_TIMEOUT_S", 180)),
-            max_fleet_requests=int(os.environ.get("PATHOS_MAX_FLEET_REQUESTS", 120)),
-            max_fleet_vehicles=int(os.environ.get("PATHOS_MAX_FLEET_VEHICLES", 20)),
         )

@@ -12,7 +12,7 @@ else
   mkdir -p build
   CXX="${CXX:-c++}"
   FLAGS="-std=c++17 -O2 -Wall -Wextra -Wpedantic -Iinclude"
-  SRCS="src/graph.cpp src/path.cpp src/bfs.cpp src/dijkstra.cpp src/astar.cpp src/tsp.cpp src/traffic.cpp src/tdroute.cpp src/fleet.cpp src/sim.cpp src/commands.cpp src/bench.cpp"
+  SRCS="src/graph.cpp src/path.cpp src/bfs.cpp src/dijkstra.cpp src/astar.cpp src/tsp.cpp"
   $CXX $FLAGS $SRCS src/main.cpp -o build/pathos_engine
   $CXX $FLAGS $SRCS tests/test_engine.cpp -o build/pathos_tests
 fi
