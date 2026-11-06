@@ -18,6 +18,12 @@ add_library(pathos_core
   src/dijkstra.cpp
   src/astar.cpp
   src/tsp.cpp
+  src/traffic.cpp
+  src/tdroute.cpp
+  src/fleet.cpp
+  src/sim.cpp
+  src/commands.cpp
+  src/bench.cpp
 )
 target_include_directories(pathos_core PUBLIC include)
 target_compile_options(pathos_core PRIVATE -Wall -Wextra -Wpedantic)

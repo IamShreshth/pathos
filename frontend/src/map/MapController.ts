@@ -10,7 +10,7 @@ export interface AnimationRun {
 
 const toLatLngs = (g: LineString): L.LatLngExpression[] => g.coordinates.map(([lon, lat]) => [lat, lon]);
 
-function pinIcon(label: string, color: string): L.DivIcon {
+export function pinIcon(label: string, color: string): L.DivIcon {
   return L.divIcon({
     className: "pin",
     html: `<div class="pin-body" style="background:${color}">${label}</div>`,
@@ -29,6 +29,7 @@ export class MapController {
   private readonly markers = L.layerGroup();
   private readonly proposal = L.layerGroup(); // preview of an area that could be downloaded
   private frame = 0;
+  private readonly custom = new Map<string, L.LayerGroup>();
 
   constructor(el: HTMLElement, onClick: (c: Coordinate) => void) {
     this.map = L.map(el, { preferCanvas: true, zoomControl: true }).setView([26.9124, 75.7873], 14);
@@ -87,8 +88,27 @@ export class MapController {
     this.map.fitBounds(circle.getBounds().pad(0.1));
   }
 
+  /** A named overlay for panels that draw their own Leaflet objects (traffic, fleet, reliability...). */
+  layer(name: string): L.LayerGroup {
+    let g = this.custom.get(name);
+    if (!g) {
+      g = L.layerGroup().addTo(this.map);
+      this.custom.set(name, g);
+    }
+    return g;
+  }
+
+  clearLayer(name: string): void {
+    this.custom.get(name)?.clearLayers();
+  }
+
+  clearLayers(): void {
+    this.custom.forEach((g) => g.clearLayers());
+  }
+
   /** Remove everything drawn for the previous graph. */
   clearAll(): void {
+    this.clearLayers();
     this.clearSearch();
     this.clearRoutes();
     this.clearMarkers();

@@ -1,0 +1,62 @@
+{
+ "ok": true,
+ "experiment": "E7",
+ "graph": "grid-60",
+ "nodes": 3473,
+ "edges": 11232,
+ "rows": [
+  {
+   "kind": "query",
+   "pairs": 30,
+   "dijkstra_ms": 0.123647,
+   "astar_ms": 0.095507,
+   "td_dijkstra_ms": 0.148368,
+   "td_astar_ms": 0.12846,
+   "dijkstra_expanded": 2039.53,
+   "astar_expanded": 807.8,
+   "td_dijkstra_expanded": 2092.73,
+   "td_astar_expanded": 1361.47,
+   "rss_mb": 3.26562
+  },
+  {
+   "kind": "fleet",
+   "requests": 10,
+   "vehicles": 2,
+   "matrix_nodes": 11,
+   "matrix_searches": 99,
+   "matrix_ms": 19.028,
+   "solve_ms": 0.757792,
+   "total_ms": 19.7906,
+   "iterations": 300,
+   "unassigned": 0,
+   "rss_mb": 3.75
+  },
+  {
+   "kind": "fleet",
+   "requests": 20,
+   "vehicles": 2,
+   "matrix_nodes": 21,
+   "matrix_searches": 189,
+   "matrix_ms": 36.4138,
+   "solve_ms": 6.05962,
+   "total_ms": 42.4774,
+   "iterations": 600,
+   "unassigned": 1,
+   "rss_mb": 3.96875
+  },
+  {
+   "kind": "fleet",
+   "requests": 40,
+   "vehicles": 5,
+   "matrix_nodes": 41,
+   "matrix_searches": 369,
+   "matrix_ms": 74.8228,
+   "solve_ms": 43.4543,
+   "total_ms": 118.284,
+   "iterations": 1200,
+   "unassigned": 0,
+   "rss_mb": 4.28125
+  }
+ ],
+ "wall_s": 0.2
+}

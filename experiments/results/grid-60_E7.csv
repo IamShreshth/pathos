@@ -1,0 +1,5 @@
+astar_expanded,astar_ms,dijkstra_expanded,dijkstra_ms,iterations,kind,matrix_ms,matrix_nodes,matrix_searches,pairs,requests,rss_mb,solve_ms,td_astar_expanded,td_astar_ms,td_dijkstra_expanded,td_dijkstra_ms,total_ms,unassigned,vehicles
+807.8,0.095507,2039.53,0.123647,,query,,,,30,,3.26562,,1361.47,0.12846,2092.73,0.148368,,,
+,,,,300,fleet,19.028,11,99,,10,3.75,0.757792,,,,,19.7906,0,2
+,,,,600,fleet,36.4138,21,189,,20,3.96875,6.05962,,,,,42.4774,1,2
+,,,,1200,fleet,74.8228,41,369,,40,4.28125,43.4543,,,,,118.284,0,5

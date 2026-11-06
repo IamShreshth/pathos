@@ -82,7 +82,11 @@ class EngineClient:
     def tour(self, weight: str, stops: list[int]) -> dict:
         return self._call(f"tour {weight} " + " ".join(str(s) for s in stops))
 
-    def _call(self, command: str) -> dict:
+    def command(self, payload: dict, timeout: float | None = None) -> dict:
+        """Send one JSON command (traffic, td_route, replan_demo, fleet, bench) and return the reply."""
+        return self._call(json.dumps(payload, separators=(",", ":")), timeout)
+
+    def _call(self, command: str, timeout: float | None = None) -> dict:
         with self._lock:
             for attempt in (1, 2):
                 if not self.alive:
@@ -91,7 +95,7 @@ class EngineClient:
                 try:
                     self._proc.stdin.write(command + "\n")  # type: ignore[union-attr]
                     self._proc.stdin.flush()  # type: ignore[union-attr]
-                    reply = self._read_line(self.timeout_s)
+                    reply = self._read_line(timeout or self.timeout_s)
                     break
                 except (BrokenPipeError, EngineError) as exc:
                     log.error("engine call failed (attempt %d): %s", attempt, exc)

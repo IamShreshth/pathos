@@ -27,3 +27,4 @@ data/*.json
 !data/.gitkeep
 
 .DS_Store
+experiments/results/graphs/
